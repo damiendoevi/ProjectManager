@@ -4,7 +4,7 @@ from Authentication.models import MyUser
 class Project(models.Model):
     name = models.CharField(max_length=50, null=False, unique=True)
     code_invitation = models.CharField(max_length=255, unique=True);
-    admin_id = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name="projects",)
+    admin = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name="projects",)
     members = models.ManyToManyField(MyUser);
 
     
@@ -24,7 +24,6 @@ class Task(models.Model):
     title = models.CharField(max_length=255, null=False)
     description = models.CharField(max_length=500, null=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="tasks",)
-    users = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name="tasks",)
     status = models.CharField(max_length=7, choices=STATUS_CHOICE, default="TODO");
     priority = models.CharField(max_length=6, choices=PRIORITY_CHOICE, default="LOW");
     start_date = models.DateTimeField(null=True);

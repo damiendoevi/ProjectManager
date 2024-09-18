@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsProjectOwner, IsBelongsToTask, IsBelongsToProject, IsProjectOwnerThroughTask, IsBelongsToProjectThroughTask
 from .models import Project, Task
-from .serializers import ProjectSerializer, TaskSerializer
+from .serializers import ProjectSerializer, TaskSerializer, InvitationCodeSerializer
 from Comment.serializers import CommentSerializer
 from rest_framework.decorators import action
 from django.db.models import Q
@@ -18,13 +18,13 @@ class ProjectViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'])
     def join(self,request, pk=None):
         project = Project.objects.filter(code_invitation=request.data.get("code_invitation")).first();
-        serializer = self.get_serializer(instance=project, data=request.data)
+        serializer = InvitationCodeSerializer(data=request.data, context={"request": self.request})
         serializer.is_valid(raise_exception=True)
 
         user = request.user
 
-        if user not in project.users.all():
-            project.users.add(user);
+        if user not in project.members.all():
+            project.members.add(user);
             project.save()
 
         serializer = ProjectSerializer(project)
@@ -62,6 +62,8 @@ class ProjectViewSet(viewsets.ModelViewSet):
     def get_permissions(self):        
         if self.action == 'tasks' and self.request.method == 'POST' or self.action == 'update' or self.action == 'delete':
             self.permission_classes = [IsAuthenticated, IsProjectOwner]
+        elif (self.action != 'tasks' and self.action == "POST") or self.action == "join":
+            self.permission_classes = [IsAuthenticated]
 
         return super().get_permissions()
 

@@ -29,8 +29,9 @@ simple_router.register(r'tasks', TaskViewSet, basename="tasks"),
 simple_router.register(r'comments', CommentViewSet, basename="comments"),
 
 urlpatterns = [
+    path('api/auth/', include('djoser.urls')),
     path('api/auth/', include('djoser.urls.jwt')),
-    re_path(r'^api/', include(simple_router.urls)),
+    re_path('api/', include(simple_router.urls)),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]

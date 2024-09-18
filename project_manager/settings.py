@@ -42,12 +42,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',
     'djoser',
     'Authentication.apps.AuthenticationConfig',
     'Project.apps.ProjectConfig',
     'Comment.apps.CommentConfig',
-
     'drf_spectacular',
     'drf_spectacular_sidecar',
 ]
@@ -55,6 +55,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -185,7 +186,6 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
     "REFRESH_TOKEN_LIFETIME": timedelta(hours=12),
-    "TOKEN_OBTAIN_SERIALIZER": "Authentication.serializers.MyTokenObtainPairSerializer",
     'AUTH_COOKIE': 'project_manager_access_token',
     'AUTH_REFRESH_COOKIE': 'project_manager_refresh_token',
     'COOKIE_DOMAIN': "localhost",
@@ -213,4 +213,15 @@ DJOSER = {
         'user_list': ['rest_framework.permissions.IsAdminUser'],
         'user_delete': ['rest_framework.permissions.IsAdminUser'],
     }
+}
+
+# DRF SPECTACULAR Settings
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Mini Plateforme',
+    'DESCRIPTION': 'Gestion de projet collaboratif',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'SWAGGER_UI_DIST': 'SIDECAR',
+    'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
+    'REDOC_DIST': 'SIDECAR',
 }
