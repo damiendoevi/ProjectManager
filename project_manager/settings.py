@@ -27,11 +27,14 @@ SECRET_KEY = 'django-insecure-pu8b78)5knwn2wd53w-a5x%&x^p3-cq&med9kccxo1u4aq7mrp
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
+CORS_ALLOWED_ORIGINS = ["http://localhost:5173", "http://localhost:8000"]
+
+# Allow cookies
+CORS_ALLOW_CREDENTIALS = True
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -85,7 +88,7 @@ WSGI_APPLICATION = 'project_manager.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': "training_platform",
+        'NAME': "project_manager",
         'USER': "root",
         'PASSWORD': "",
         'HOST': "localhost",

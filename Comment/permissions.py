@@ -1,13 +1,12 @@
 from rest_framework.permissions import BasePermission;
-
-from Project.models import Task
+from .models import Comment
     
 class IsBelongsToTask(BasePermission):
     def has_permission(self, request, view):
-        
-        task = Task.objects.filter(id=view.kwargs.get('pk'), members__id=request.user.id).first();
+        # Check if the comment is for the task of a project to which the user belongs
+        comment = Comment.objects.filter(id=view.kwargs.get('pk'), task__members__id=request.user.id).first();
 
-        if task is None:
+        if comment is None:
             return False
         
         return False;

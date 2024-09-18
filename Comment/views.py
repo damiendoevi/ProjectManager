@@ -6,8 +6,6 @@ from .permissions import IsBelongsToTask
 
 
 class CommentViewSet(mixins.RetrieveModelMixin,
-                   mixins.UpdateModelMixin,
-                   mixins.ListModelMixin,
                    viewsets.GenericViewSet):
 
     queryset = Comment.objects.all()
