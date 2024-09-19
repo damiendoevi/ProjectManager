@@ -1,6 +1,37 @@
 <script setup>
 import DashTopBar from '@/components/DashTopBar.vue'
 
+import ProjectService from '../services/project-service.js'
+
+import { RouterLink, useRouter } from 'vue-router'
+import { useStore } from 'vuex'
+import { computed, ref, onMounted } from 'vue'
+
+const store = useStore()
+const router = useRouter()
+const projects = ref(null)
+
+const isAuthenticated = computed(() => {
+  return store.state.auth.status.isAuthenticated
+})
+
+onMounted(async () => {
+  if (!isAuthenticated.value) {
+    router.push('/login')
+  }
+
+  await getProjects()
+})
+
+async function getProjects() {
+  try {
+    const data = await ProjectService.getProjects()
+    projects.value = data
+  } catch (error) {
+    return
+  }
+}
+
 function getBorderStyle(index) {
   // Use the index to generate a different shade (hue)
   const hue = (index * 60) % 360
@@ -46,9 +77,9 @@ function getTextStyle(index) {
 
             <!-- Content Row -->
             <div class="row">
-              <div v-for="i in 6" :key="i" class="col-md-6 mb-4">
+              <div v-for="(project, i) in projects" :key="project?.id" class="col-md-6 mb-4">
                 <RouterLink
-                  to="/dashboard/projects/1/tasks"
+                  :to="`/dashboard/projects/${project.id}/tasks`"
                   class="card shadow h-100 py-2 text-decoration-none"
                   id="project_card"
                   :style="getBorderStyle(i)"
@@ -57,7 +88,7 @@ function getTextStyle(index) {
                     <div class="row no-gutters align-items-center">
                       <div class="col">
                         <div class="text-xs font-weight-bold mb-1" :style="getTextStyle(i)">
-                          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                          {{ project?.name }}
                         </div>
                       </div>
                     </div>

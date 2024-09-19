@@ -1,11 +1,35 @@
+<script setup>
+import { RouterLink } from 'vue-router'
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
+
+const router = useRouter()
+const store = useStore()
+
+const isAuthenticated = computed(() => {
+  return store.state.auth.status.isAuthenticated
+})
+
+function goToDashboard() {
+  if (isAuthenticated.value) {
+    router.push('/dashboard')
+  } else {
+    router.push('/login')
+  }
+}
+</script>
+
 <template>
   <main class="masthead d-flex align-items-center">
     <div class="container px-4 px-lg-5 text-center">
-      <h1 class="mb-1">Simplify Your Project Management</h1>
+      <h1 class="mb-1 text-secondary">Simplify Your Project Management</h1>
       <h3 class="mb-5">
         <em>Effortlessly manage your projects, tasks, and teams in one place</em>
       </h3>
-      <a class="btn btn-primary" href="#about">Discover How</a>
+      <RouterLink @click.prevent="" to="#" class="btn btn-primary" @click="goToDashboard"
+        >Discover How</RouterLink
+      >
     </div>
   </main>
 </template>
@@ -29,6 +53,11 @@
 .masthead h1,
 .masthead .h1 {
   font-size: 2rem;
+}
+
+h1,
+h3 {
+  color: black !important;
 }
 
 @media (min-width: 992px) {

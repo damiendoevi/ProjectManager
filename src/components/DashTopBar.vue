@@ -1,4 +1,47 @@
-<script setup></script>
+<script setup>
+import { RouterLink, useRouter } from 'vue-router'
+import AuthenticationService from '../services/authentication-service.js'
+import { useStore } from 'vuex'
+import { ref, onMounted } from 'vue'
+
+const router = useRouter()
+const store = useStore()
+
+const loading = ref(false)
+
+const user = ref(null)
+
+onMounted(async () => {
+  editProfile()
+})
+
+async function editProfile() {
+  try {
+    const data = await AuthenticationService.editProfile()
+    user.value = data
+  } catch (error) {
+    return
+  }
+}
+
+function handleLogout() {
+  loading.value = true
+  setTimeout(() => {
+    loading.value = false
+    store.dispatch('auth/logout').then(async () => {
+      await closeModal()
+      router.push('/login')
+    })
+  }, 2000)
+}
+
+async function closeModal() {
+  const modal = document.getElementById('logoutModal')
+  const bootstrapModal = bootstrap.Modal.getInstance(modal)
+
+  bootstrapModal.hide()
+}
+</script>
 <template>
   <!-- Topbar -->
   <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
@@ -93,7 +136,7 @@
           aria-haspopup="true"
           aria-expanded="false"
         >
-          <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+          <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ user?.last_name }}</span>
           <div
             class="img-profile rounded-circle"
             style="height: 40px; width: 40px; background-color: rgba(0, 0, 0, 0.1)"
@@ -104,15 +147,20 @@
           class="dropdown-menu dropdown-menu-left shadow animated--grow-in"
           aria-labelledby="userDropdown"
         >
-          <a class="dropdown-item" href="#">
+          <RouterLink class="dropdown-item" to="/">
             <i class="fas fa-arrow-left fa-sm fa-fw mr-2 text-gray-400"></i>
             Home
-          </a>
+          </RouterLink>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
+          <RouterLink
+            class="dropdown-item"
+            to="#"
+            data-bs-toggle="modal"
+            data-bs-target="#logoutModal"
+          >
             <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
             Logout
-          </a>
+          </RouterLink>
         </div>
       </li>
     </ul>
@@ -143,8 +191,13 @@
           Are you sure you want to log out? If yes, please click on Logout to confirm.
         </div>
         <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="login.html">Logout</a>
+          <RouterLink
+            @click.prevent="handleLogout"
+            class="btn btn-primary"
+            :class="{ disabled: loading }"
+            to="#"
+            >Logout</RouterLink
+          >
         </div>
       </div>
     </div>

@@ -3,7 +3,7 @@ import axios from '../services/axios-default-config'
 class AuthenticationService {
   async login(formData) {
     return axios
-      .post('/api/auth/jwt/create/', formData)
+      .post('/api/auth/jwt/create', formData)
       .then(function (response) {
         return response.data
       })

@@ -6853,7 +6853,7 @@ button.bg-primary:focus {
   background-color: #2653d4 !important;
 }
 
-.bg-secondary {
+/* .bg-secondary {
   background-color: #858796 !important;
 }
 
@@ -6862,7 +6862,7 @@ a.bg-secondary:focus,
 button.bg-secondary:hover,
 button.bg-secondary:focus {
   background-color: #6b6d7d !important;
-}
+} */
 
 .bg-success {
   background-color: #1cc88a !important;
@@ -6919,7 +6919,7 @@ button.bg-light:focus {
   background-color: #d4daed !important;
 }
 
-.bg-dark {
+/* .bg-dark {
   background-color: #5a5c69 !important;
 }
 
@@ -6928,7 +6928,7 @@ a.bg-dark:focus,
 button.bg-dark:hover,
 button.bg-dark:focus {
   background-color: #42444e !important;
-}
+} */
 
 .bg-white {
   background-color: #fff !important;

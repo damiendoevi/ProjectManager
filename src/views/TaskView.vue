@@ -1,5 +1,59 @@
 <script setup>
 import DashTopBar from '@/components/DashTopBar.vue'
+import { RouterLink, useRouter } from 'vue-router'
+import { useStore } from 'vuex'
+import { computed, ref, onMounted } from 'vue'
+import ProjectService from '../services/project-service.js'
+
+const store = useStore()
+const router = useRouter()
+
+const projectTasks = ref([])
+
+const props = defineProps({
+  project_id: {
+    type: Number,
+    required: true
+  }
+})
+
+const isAuthenticated = computed(() => {
+  return store.state.auth.status.isAuthenticated
+})
+
+onMounted(async () => {
+  if (!isAuthenticated.value) {
+    router.push('/login')
+  }
+
+  await getProjectTasks(props.project_id)
+})
+
+async function getProjectTasks(project_id) {
+  try {
+    const data = await ProjectService.getTasks(project_id)
+    projectTasks.value = data
+  } catch (error) {
+    if (error && error.response && error.response.status === 404) {
+      router.replace('/')
+    }
+  }
+}
+
+function formatDate(backendDateString) {
+  const date = new Date(backendDateString)
+
+  const options = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  }
+
+  return date.toLocaleString('fr-FR', options)
+}
 </script>
 <template>
   <div>
@@ -65,14 +119,31 @@ import DashTopBar from '@/components/DashTopBar.vue'
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="i in 6" :key="i">
+                      <tr v-for="(task, i) in projectTasks" :key="i">
                         <td>{{ i }}</td>
-                        <td>Lorem ipsum dolor sit amet consectetur adipisicing elit.</td>
-                        <td>System Architect</td>
-                        <td>Edinburgh</td>
-                        <td>61</td>
-                        <td>2011/04/25</td>
-                        <td>$320,800</td>
+                        <td>{{ task?.description }}</td>
+                        <td>{{ task?.description }}</td>
+                        <td>
+                          <ul v-if="task?.members.length > 0">
+                            <li v-for="member in task?.members" :key="member.id">
+                              {{ member.last_name + member.first_name }}
+                            </li>
+                          </ul>
+                          <span v-else>None</span>
+                        </td>
+                        <td>{{ formatDate(task?.start_date) }}</td>
+                        <td>{{ formatDate(task?.end_date) }}</td>
+                        <td>
+                          <span v-if="task?.status == 'DONE'" class="p-2 bg-success">
+                            {{ task?.status }}
+                          </span>
+                          <span v-else-if="task?.status == 'IN_PROG'" class="p-2 bg-warning">
+                            {{ task?.status }}
+                          </span>
+                          <span v-else-if="task?.status == 'TODO'" class="p-2 bg-secondary">
+                            {{ task?.status }}
+                          </span>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -171,9 +242,9 @@ import DashTopBar from '@/components/DashTopBar.vue'
                 <option value="2">Two</option>
                 <option value="3">Three</option>
               </select>
-              <table class="table" id="dataTable" width="100%" cellspacing="0">
+              <!-- <table class="table" id="dataTable" width="100%" cellspacing="0">
                 <tbody>
-                  <tr v-for="i in 6" :key="i">
+                  <tr>
                     <td class="p-0">Edinburgh</td>
                     <td class="p-0">
                       <button class="d-sm-inline-block btn btn-sm btn-white">
@@ -182,7 +253,7 @@ import DashTopBar from '@/components/DashTopBar.vue'
                     </td>
                   </tr>
                 </tbody>
-              </table>
+              </table> -->
             </div>
             <div class="col col-md-6 col-12 form-outline mb-3">
               <label class="form-label" for="form2Example2">Comments</label>

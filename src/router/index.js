@@ -60,7 +60,7 @@ const router = createRouter({
       name: 'project-tasks',
       component: TaskView,
       props: (route) => ({
-        project_id: route.params.project_id
+        project_id: parseInt(route.params.project_id)
       }),
       meta: {
         title: 'Tasks'
