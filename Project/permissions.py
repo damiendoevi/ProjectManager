@@ -16,7 +16,7 @@ class IsBelongsToProject(BasePermission):
     def has_permission(self, request, view):
         # Check if user is the owner or Belongs to project
         project = Project.objects.filter(Q(admin__id=request.user.id) | Q(members__id=request.user.id), id=view.kwargs.get('pk')).first();
-
+        
         if project is None:
             return False
         

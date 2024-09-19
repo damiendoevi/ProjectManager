@@ -20,6 +20,7 @@ from django.conf.urls.static import static
 from django.urls import re_path, path, include;
 from rest_framework.routers import SimpleRouter
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from Authentication.views import MyTokenObtainPairView, DestroyTokenView
 from Project.views import ProjectViewSet, TaskViewSet
 from Comment.views import CommentViewSet
 
@@ -30,8 +31,12 @@ simple_router.register(r'comments', CommentViewSet, basename="comments"),
 
 urlpatterns = [
     path('api/auth/', include('djoser.urls')),
-    path('api/auth/', include('djoser.urls.jwt')),
+    
     re_path('api/', include(simple_router.urls)),
+
+    re_path(r'^api/auth/jwt/create/?', MyTokenObtainPairView.as_view(), name="jwt-create"),
+    re_path(r'^api/auth/jwt/destroy/?', DestroyTokenView.as_view(), name="jwt-destroy"),
+
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]

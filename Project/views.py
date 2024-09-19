@@ -62,10 +62,18 @@ class ProjectViewSet(viewsets.ModelViewSet):
     def get_permissions(self):        
         if self.action == 'tasks' and self.request.method == 'POST' or self.action == 'update' or self.action == 'delete':
             self.permission_classes = [IsAuthenticated, IsProjectOwner]
-        elif (self.action != 'tasks' and self.action == "POST") or self.action == "join":
+        elif (self.action != 'tasks' and self.action == "POST") or self.action == "join" or self.action == "list":
             self.permission_classes = [IsAuthenticated]
 
         return super().get_permissions()
+    
+    def get_queryset(self):
+
+        user = self.request.user
+        if self.action == "list": 
+            return self.queryset.filter(Q(admin__id=user.id) | Q(members__id=user.id)).distinct()
+        
+        return self.queryset
 
 
 

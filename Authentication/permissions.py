@@ -7,3 +7,5 @@ class IsNotAuthenticated(BasePermission):
 
         if user and user.is_authenticated:
             return True
+        
+        return False

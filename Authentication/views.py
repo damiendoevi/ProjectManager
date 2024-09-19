@@ -53,7 +53,7 @@ class DestroyTokenView(APIView):
 
 class MyTokenObtainPairView(TokenObtainPairView):
     throttle_classes = [CustomUserRateThrottle]
-    permission_classes = [IsNotAuthenticated]
+    # permission_classes = [IsNotAuthenticated]
 
     def post(self, request: Request, *args, **kwargs) -> Response:
         serializer = self.get_serializer(data=request.data)
